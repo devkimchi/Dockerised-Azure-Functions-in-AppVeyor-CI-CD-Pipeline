@@ -11,3 +11,4 @@ LICENSE
 local.settings.json
 bin
 obj
+*.placeholder
