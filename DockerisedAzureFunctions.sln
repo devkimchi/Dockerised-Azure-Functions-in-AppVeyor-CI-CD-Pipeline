@@ -7,6 +7,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1C2DB0C0-40B
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Dockerised.FunctionApp", "src\Dockerised.FunctionApp\Dockerised.FunctionApp.csproj", "{62A41E91-D486-479E-B78C-45782EFCAA20}"
 EndProject
+Project("{151D2E53-A2C4-4D7D-83FE-D05416EBD58E}") = "ResourceGroup", "src\ResourceGroup\ResourceGroup.deployproj", "{7116705F-59AD-4564-80D0-B46E753C9FF9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +19,17 @@ Global
 		{62A41E91-D486-479E-B78C-45782EFCAA20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{62A41E91-D486-479E-B78C-45782EFCAA20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{62A41E91-D486-479E-B78C-45782EFCAA20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7116705F-59AD-4564-80D0-B46E753C9FF9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7116705F-59AD-4564-80D0-B46E753C9FF9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7116705F-59AD-4564-80D0-B46E753C9FF9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7116705F-59AD-4564-80D0-B46E753C9FF9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{62A41E91-D486-479E-B78C-45782EFCAA20} = {1C2DB0C0-40B0-43E8-971E-88CFECCB52EA}
+		{7116705F-59AD-4564-80D0-B46E753C9FF9} = {1C2DB0C0-40B0-43E8-971E-88CFECCB52EA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1E10573-197B-4230-8A94-5BFC300ED047}

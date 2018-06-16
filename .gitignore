@@ -329,7 +329,9 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 
+*.bak
 *.1.yml
 *.1.cs
 Dockerfile.1
 *.1.json
+*.local.json
