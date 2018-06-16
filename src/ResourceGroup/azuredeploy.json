@@ -1,0 +1,256 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "type": "string",
+      "metadata": {
+        "description": "The region where resources are deployed"
+      },
+      "defaultValue": "[resourceGroup().location]"
+    },
+
+    "storageAccountName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of Storage Account"
+      }
+    },
+    "storageAccountSkuName": {
+      "type": "string",
+      "metadata": {
+        "description": "SKU name of Storage Account"
+      },
+      "defaultValue": "Standard_LRS"
+    },
+    "storageAccountSkuTier": {
+      "type": "string",
+      "metadata": {
+        "description": "SKU tier of Storage Account"
+      },
+      "allowedValues": [
+        "Standard",
+        "Premium"
+      ],
+      "defaultValue": "Standard"
+    },
+
+    "appServicePlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of App Service Plan on Linix"
+      }
+    },
+    "appServicePlanSkuName": {
+      "type": "string",
+      "metadata": {
+        "description": "SKU name of App Service Plan on Linix"
+      },
+      "defaultValue": "S1"
+    },
+    "appServicePlanSkuTier": {
+      "type": "string",
+      "metadata": {
+        "description": "SKU tier of App Service Plan on Linix"
+      },
+      "allowedValues": [
+        "Basic",
+        "Standard",
+        "Premium"
+      ],
+      "defaultValue": "Standard"
+    },
+    "appServicePlanSkuSize": {
+      "type": "string",
+      "metadata": {
+        "description": "SKU size of App Service Plan on Linix"
+      },
+      "defaultValue": "S1"
+    },
+
+    "functionAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of Function App on Linix"
+      }
+    },
+    "functionAppDockerCustomImageName": {
+      "type": "string",
+      "metadata": {
+        "description": "Custom Docker image for Function App on Linix"
+      }
+    },
+    "functionAppEditMode": {
+      "type": "string",
+      "metadata": {
+        "description": "Edit mode for Function App on Linix"
+      },
+      "defaultValue": "readOnly"
+    },
+    "functionAppExtensionVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Default extension version for Function App on Linix"
+      },
+      "defaultValue": "beta"
+    },
+    "functionAppNodeDefaultVersion": {
+      "type": "string",
+      "metadata": {
+        "description": "Default node.js version for Function App on Linix"
+      },
+      "defaultValue": "6.5.0"
+    },
+    "functionAppEnableAppServiceStorage": {
+      "type": "bool",
+      "metadata": {
+        "description": "Value indicating whether to enable App Service Storage on Function App on Linix or not"
+      },
+      "defaultValue": false
+    }
+  },
+  "variables": {
+    "storageAccount": {
+      "name": "[parameters('storageAccountName')]",
+      "apiVersion": "[providers('Microsoft.Storage', 'storageAccounts').apiVersions[0]]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('storageAccountSkuName')]",
+        "tier": "[parameters('storageAccountSkuTier')]"
+      }
+    },
+    "appServicePlan": {
+      "name": "[parameters('appServicePlanName')]",
+      "apiVersion": "[providers('Microsoft.Web', 'serverfarms').apiVersions[0]]",
+      "location": "[parameters('location')]",
+      "sku": {
+        "name": "[parameters('appServicePlanSkuName')]",
+        "tier": "[parameters('appServicePlanSkuTier')]",
+        "size": "[parameters('appServicePlanSkuSize')]"
+      }
+    },
+    "functionApp": {
+      "name": "[parameters('functionAppName')]",
+      "apiVersion": "[providers('Microsoft.Web', 'sites').apiVersions[0]]",
+      "location": "[parameters('location')]",
+      "dockerCustomImageName": "[parameters('functionAppDockerCustomImageName')]",
+      "editMode": "[parameters('functionAppEditMode')]",
+      "extensionVersion": "[parameters('functionAppExtensionVersion')]",
+      "websiteNodeDefaultVersion": "[parameters('functionAppNodeDefaultVersion')]",
+      "websiteEnableAppServiceStorage": "[parameters('functionAppEnableAppServiceStorage')]"
+    },
+    "tags": {
+      "author": "Justin Yoo",
+      "profile": "https://twitter.com/justinchronicle",
+      "projectUrl": "https://github.com/devkimchi/Dockerised-Azure-Functions-in-AppVeyor-CI-CD-Pipeline",
+      "repositoryUrl": "https://github.com/devkimchi/Dockerised-Azure-Functions-in-AppVeyor-CI-CD-Pipeline",
+      "license": "https://raw.githubusercontent.com/devkimchi/Dockerised-Azure-Functions-in-AppVeyor-CI-CD-Pipeline/master/LICENSE"
+    }
+  },
+  "resources": [
+    {
+      "comments": "### RESOURCE - STORAGE ACCOUNT ###",
+      "apiVersion": "[variables('storageAccount').apiVersion]",
+      "type": "Microsoft.Storage/storageAccounts",
+      "name": "[variables('storageAccount').name]",
+      "location": "[variables('storageAccount').location]",
+      "kind": "StorageV2",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "keySource": "Microsoft.Storage",
+          "services": {
+            "file": {
+              "enabled": true
+            },
+            "blob": {
+              "enabled": true
+            }
+          }
+        }
+      }
+    },
+    {
+      "comments": "### RESOURCE - APP SERVICE PLAN ###",
+      "apiVersion": "[variables('appServicePlan').apiVersion]",
+      "type": "Microsoft.Web/serverfarms",
+      "name": "[variables('appServicePlan').name]",
+      "location": "[variables('appServicePlan').location]",
+      "kind": "linux",
+      "tags": "[variables('tags')]",
+      "sku": {
+        "name": "[variables('appServicePlan').sku.name]",
+        "tier": "[variables('appServicePlan').sku.tier]",
+        "size": "[variables('appServicePlan').sku.size]"
+      },
+      "properties": {
+        "name": "[variables('appServicePlan').name]",
+        "reserved": true
+      }
+    },
+    {
+      "comments": "### RESOURCE - AZURE FUNCTIONS APP ###",
+      "apiVersion": "[variables('functionApp').apiVersion]",
+      "type": "Microsoft.Web/sites",
+      "name": "[variables('functionApp').name]",
+      "location": "[variables('functionApp').location]",
+      "kind": "functionapp,linux",
+      "tags": "[variables('tags')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount').name)]",
+        "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan').name)]"
+      ],
+      "properties": {
+        "name": "[variables('functionApp').name]",
+        "clientAffinityEnabled": false,
+        "httpsOnly": true,
+        "hostNames": [ "[concat(variables('functionApp').name, '.azurewebsites.net')]" ],
+        "enabledHostNames": [
+          "[concat(variables('functionApp').name, '.azurewebsites.net')]",
+          "[concat(variables('functionApp').name, '.scm.azurewebsites.net')]"
+        ],
+        "hostNameSslStates": [
+          {
+            "name": "[concat(variables('functionApp').name, '.azurewebsites.net')]"
+          },
+          {
+            "name": "[concat(variables('functionApp').name, '.scm.azurewebsites.net')]"
+          }
+        ],
+        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', variables('appServicePlan').name)]",
+        "reserved": true
+      },
+      "resources": [
+        {
+          "comments": "### RESOURCE - AZURE FUNCTIONS APP - APP SETTINGS ###",
+          "apiVersion": "[variables('functionApp').apiVersion]",
+          "type": "config",
+          "name": "appsettings",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites', variables('functionApp').name)]"
+          ],
+          "properties": {
+            "AzureWebJobsDashboard": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount').name,';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount').name), variables('storageAccount').apiVersion).keys[0].value, ';EndpointSuffix=core.windows.net')]",
+            "AzureWebJobsStorage": "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('storageAccount').name,';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('storageAccount').name), variables('storageAccount').apiVersion).keys[0].value, ';EndpointSuffix=core.windows.net')]",
+            "DOCKER_CUSTOM_IMAGE_NAME": "[variables('functionApp').dockerCustomImageName]",
+            "FUNCTION_APP_EDIT_MODE": "[variables('functionApp').editMode]",
+            "FUNCTIONS_EXTENSION_VERSION": "[variables('functionApp').extensionVersion]",
+            "WEBSITE_NODE_DEFAULT_VERSION": "[variables('functionApp').websiteNodeDefaultVersion]",
+            "WEBSITES_ENABLE_APP_SERVICE_STORAGE": "[toLower(string(variables('functionApp').websiteEnableAppServiceStorage))]"
+          }
+        }
+      ]
+    }
+  ],
+  "outputs": {
+    "hostname": {
+      "type": "string",
+      "value": "[concat('https://', reference(resourceId('Microsoft.Web/sites', variables('functionApp').name), variables('functionApp').apiVersion).hostNames[0])]"
+    }
+  }
+}
