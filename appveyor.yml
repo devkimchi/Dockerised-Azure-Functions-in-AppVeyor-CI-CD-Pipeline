@@ -1,0 +1,12 @@
+version: 1.0.{build}
+image: Ubuntu
+services:
+- docker
+build_script:
+- sh: docker build src/Dockerised.FunctionApp -t function_app
+- sh: docker tag function_app $docker_account/function_app
+deploy_script:
+- sh: docker login -u $docker_account -p $docker_password
+- sh: docker push $docker_account/function_app
+- sh: az login --service-principal -u $azure_account -p $azure_password -t $azure_tenant.onmicrosoft.com
+- sh: az group deployment create -g $azure_resource_group -n AppVeyor --template-file src/ResourceGroup/azuredeploy.json --parameters @src/ResourceGroup/azuredeploy.parameters.json --parameters storageAccountName=$storage_account_name appServicePlanName=$app_service_plan_name functionAppName=$function_app_name functionAppDockerCustomImageName=$docker_account/function_app
